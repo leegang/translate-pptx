@@ -6,7 +6,7 @@ from pptx import Presentation
 # Defining Global vars 
 import sys
 config = sys.modules[__name__]
-config.MODIF        = 0         # Indicates which modification to apply on text
+config.MODIF        = 0        # Indicates which modification to apply on text
 config.CORPUS       = []        # Used to store texts of the PowerPoint
 config.REPLACE      = {}        # Usedto replace part of the text (looking for caracters in a text)
 config.TRANSLATION  = {}        # Used to replace full sentences   (looking for a text)
@@ -65,7 +65,7 @@ def make_text_modification(text, modif=None):
                 text.replace(original_str, replace_str)
         return text
 
-    # logger.debug('No transformation on : {}'.format(text))
+    logger.debug('No transformation on : {}'.format(text))
     return text
 
 

@@ -34,7 +34,7 @@ class seleniumDefault:
         """
 
         logger.error(self.driver_path)
-        self.driver = webdriver.Chrome(self.driver_path)  # TODO:check path
+        self.driver = webdriver.Chrome()  # TODO:check path
 
 
     def connect_to_url(self, url):
@@ -130,17 +130,17 @@ class seleniumDefault:
         loglevel = level_table[level.lower()]
         logzero.loglevel(loglevel)
         
-    # def add_user_agent(user_agent=None):
-    #     self.user_agent = 'Mozilla/5.0 (Linux; Android 7.0; SM-G930VC Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/58.0.3029.83 Mobile Safari/537.36'
-    #     opts = Options()
-    #     opts.add_argument(USER_AGENT)
-    #     # driver = webdriver.Chrome(path, options=opts)
+    def add_user_agent(user_agent=None):
+        self.user_agent = 'Mozilla/5.0 (Linux; Android 7.0; SM-G930VC Build/NRD90M; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/58.0.3029.83 Mobile Safari/537.36'
+        opts = Options()
+        opts.add_argument(self.user_agent)
+        driver = webdriver.Chrome(path, options=opts)
 
 
-    # def hide_window(self):
-    #     opts = Options()
-    #     # BAD # opts.add_argument('headless')
-    #     # BAD # opts.add_argument('window-size=1200x600')
-    #     self.driver = webdriver.Chrome(self.driver_path, options=opts)
-    #     # GOOD # self.driver.set_window_position(-10000,0) 
-    #     # BAD  # self.driver.set_window_size(0, 0)
+    def hide_window(self):
+        opts = Options()
+        # BAD # opts.add_argument('headless')
+        # BAD # opts.add_argument('window-size=1200x600')
+        self.driver = webdriver.Chrome(self.driver_path, options=opts)
+        # GOOD # self.driver.set_window_position(-10000,0) 
+        # BAD  # self.driver.set_window_size(0, 0)

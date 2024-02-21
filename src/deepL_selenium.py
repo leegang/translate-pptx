@@ -8,6 +8,8 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from default_selenium import seleniumDefault # project local
+from selenium.webdriver.common.by import By
+
 
 # Log lib
 import logging
@@ -62,33 +64,43 @@ class seleniumDeepL(seleniumDefault):
         """
 
         clipboard.copy(sentence)
-        input_css = 'div.lmt__inner_textarea_container textarea'
-        input_area = self.driver.find_element_by_css_selector(input_css)
+        # input_css = 'div.lmt__inner_textarea_container textarea'
+        #textareasContainer > div.rounded-bl-inherit.relative.z-\[1\].min-h-\[240px\].min-w-0.md\:min-h-\[clamp\(250px\,50vh\,557px\)\] > section > div > div.relative.flex-1.rounded-inherit > d-textarea > div:nth-child(1) > p > br
+
+        
+        input_css = '#textareasContainer > div.rounded-bl-inherit.relative.z-\[1\].min-h-\[240px\].min-w-0.md\:min-h-\[clamp\(250px\,50vh\,557px\)\] > section > div > div.relative.flex-1.rounded-inherit > d-textarea > div:nth-child(1)'
+
+
+        input_area = self.driver.find_element(By.CSS_SELECTOR,input_css)
         
         input_area.clear() # self.sleep(1)
         self.paste_clipboard(input_area)
      
   
-    def get_translation_copy_button(self):
+    def get_translation_result(self):
         """When text is translated, we get it back by clicking on the "Copy to clipboard" button.
            This function gets that button.
         """
 
-        button_css = ' div.lmt__target_toolbar__copy button' 
-        button = self.driver.find_element_by_css_selector(button_css)
+        # button_css = 'div.lmt__target_toolbar__copy button' 
+        result_css = '#textareasContainer > div.rounded-br-inherit.relative.z-\[1\].min-h-\[240px\].min-w-0.md\:min-h-\[clamp\(250px\,50vh\,557px\)\].max-\[768px\]\:min-h-\[375px\] > section > div.rounded-inherit.relative.flex.flex-1.flex-col > d-textarea > div'
+
+        result = self.driver.find_element(By.CSS_SELECTOR,result_css).text
         # attribute "_dl-attr should be onClick: $0.doCopy"
-        return button
+        return result
 
 
     def get_translation(self, sleep_before_click_to_clipboard=2):
         """ Click on the get to clipboard button of deepL and then return the results.
             As page might be long depending on text size, we scroll to the button so that we can click on it. 
         """
-        button = self.get_translation_copy_button()
-        self.scroll_to_element(button, sleep_before_click_to_clipboard)
-        button = self.get_translation_copy_button()
-        button.click() # self.sleep(1)
-        content = clipboard.paste()
+        # button = self.get_translation_copy_button()
+        # self.scroll_to_element(button, sleep_before_click_to_clipboard)
+        # button = self.get_translation_copy_button()
+        # button.click() 
+        # self.sleep(1)
+        content = self.get_translation_result()
+        logger.info('Translation : {}'.format(content))
         return content
 
 
@@ -124,7 +136,7 @@ class seleniumDeepL(seleniumDefault):
             self.translations[original]=translation
 
 
-    def prepare_batch_corpus(self, corpus, joiner, max_caracter=4900):
+    def prepare_batch_corpus(self, corpus, joiner, max_caracter=500):
         """ Given a corpus of sentences, aggregate them by batch in order to make less request on DeepL website.
         PARAMETERS:
             - corpus : list of str - 
@@ -219,8 +231,10 @@ class seleniumDeepL(seleniumDefault):
             self.sleep(sleep=time_to_translate, message='Waiting for translation')
         
             full_translation = self.get_translation(sleep_before_click_to_clipboard=3)
+            logger.info('Full translation : {}'.format(full_translation))
             separate = full_translation.split(batch['joiner'])
-        
+            logger.info('Separate length : {}'.format(len(separate)))
+            logger.info('Batch size : {}'.format(batch['size']))
             assertion_message = 'The number of sentences in the translation does not match the original number of sentences'
             assert len(separate)==batch['size'], assertion_message
             # Solution could be : 1) Use another joiner 2) not to use batches
@@ -268,7 +282,7 @@ class seleniumDeepL(seleniumDefault):
             self.load_translations(file_path=load_at)
         
         # Prepare batched corpus
-        corpus_batch = self.prepare_batch_corpus(corpus, joiner)
+        corpus_batch = self.prepare_batch_corpus(corpus, joiner,max_caracter=1400)
         logger.warning('Initial corpus is composed of {} sentences'.format(len(corpus)))
         logger.warning('Formated corpus is composed of {} batches'.format(len(corpus_batch)))
         

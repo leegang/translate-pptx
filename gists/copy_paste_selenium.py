@@ -6,7 +6,7 @@ from selenium.webdriver.common.keys import Keys
 input_css = 'div.lmt__inner_textarea_container textarea'
 
 # Connecting to it with our driver
-input_area = driver.find_element_by_css_selector(input_css)
+input_area = driver.find_element(By.CSS_SELECTOR,input_css)
 
 # Set the sentence into the clipboard
 clipboard.copy(sentence)

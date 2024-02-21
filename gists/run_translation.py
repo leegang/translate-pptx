@@ -16,7 +16,7 @@ def translate_sentence(sentence):
 
     # Get thie inupt_area 
     input_css = 'div.lmt__inner_textarea_container textarea'
-    input_area = driver.find_element_by_css_selector(input_css)
+    input_area = driver.find_element(By.CSS_SELECTOR,input_css)
 
     # Send the text
     input_area.clear() 
@@ -26,8 +26,9 @@ def translate_sentence(sentence):
     time.sleep(2)
 
     # Get copybutton and click on it
-    button_css = ' div.lmt__target_toolbar__copy button' 
-    button = driver.find_element_by_css_selector(button_css)
+    # button_css = ' div.lmt__target_toolbar__copy button' 
+    button_css = '#textareasContainer > div.rounded-br-inherit.relative.z-\[1\].min-h-\[240px\].min-w-0.md\:min-h-\[clamp\(250px\,50vh\,557px\)\].max-\[768px\]\:min-h-\[375px\] > section > div.rounded-inherit.relative.flex.flex-1.flex-col > d-textarea > div'
+    button = driver.find_element(By.CSS_SELECTOR,button_css)
     button.click()
 
     # Get content from clipboard
